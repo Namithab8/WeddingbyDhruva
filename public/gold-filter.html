@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Gold Recolor - dhruva-street.png</title>
+<style>
+  body { font-family: sans-serif; padding: 30px; background: #f7f5f0; }
+  canvas { max-width: 100%; border: 1px solid #ccc; }
+  #status { margin: 12px 0; color: #24345F; }
+</style>
+</head>
+<body>
+<h2>Gold Recolor Filter</h2>
+<div id="status">Processing...</div>
+<canvas id="c"></canvas>
+<script>
+const img = new Image();
+img.onload = () => {
+  const w = img.naturalWidth, h = img.naturalHeight;
+  const canvas = document.getElementById('c');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  const id = ctx.getImageData(0, 0, w, h);
+  const d = id.data;
+
+  // gold ramp: dark grey -> deep bronze, mid -> amber, light -> pale gold
+  const stops = [
+    [0.00, [74, 45, 12]],    // deep bronze
+    [0.35, [168, 110, 30]],  // rich amber
+    [0.65, [212, 160, 55]],  // golden
+    [0.85, [232, 205, 130]], // light gold
+    [1.00, [245, 230, 180]], // pale cream-gold
+  ];
+  const ramp = (t) => {
+    for (let i = 0; i < stops.length - 1; i++) {
+      if (t <= stops[i + 1][0]) {
+        const [t0, c0] = stops[i], [t1, c1] = stops[i + 1];
+        const f = (t - t0) / (t1 - t0);
+        return [0, 1, 2].map(k => Math.round(c0[k] + (c1[k] - c0[k]) * f));
+      }
+    }
+    return stops[stops.length - 1][1];
+  };
+
+  for (let i = 0; i < d.length; i += 4) {
+    const r = d[i], g = d[i + 1], b = d[i + 2];
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    const delta = max - min;
+    const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    const sat = max === 0 ? 0 : delta / max;
+
+    // keep near-white background and very light pixels white
+    if (lum > 0.93 && sat < 0.12) continue;
+    // keep strongly colored pixels (blue linework etc.) untouched
+    if (sat > 0.35) continue;
+    // keep very dark outlines as dark warm brown (still gold family)
+    // grey / low-saturation areas -> gold ramp by luminance
+    const t = Math.min(1, Math.max(0, lum));
+    const [gr, gg, gb] = ramp(t);
+    // blend a little of original luminance detail for crispness
+    d[i] = gr; d[i + 1] = gg; d[i + 2] = gb;
+  }
+  ctx.putImageData(id, 0, 0);
+
+  canvas.toBlob((blob) => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'dhruva-street-gold.png';
+    a.click();
+    document.getElementById('status').textContent =
+      'Done! Downloaded dhruva-street-gold.png (' + w + 'x' + h + ')';
+  }, 'image/png');
+};
+img.src = 'dhruva-street.png';
+</script>
+</body>
+</html>

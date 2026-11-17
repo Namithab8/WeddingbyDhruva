@@ -1,0 +1,76 @@
+/* ---------- Services mega menu ---------- */
+.nav-dropdown { position: relative; }
+.nav-services { display: inline-flex; align-items: center; gap: 8px; }
+.dd-arrow { font-size: 11px; transition: transform .25s ease; }
+.dd-arrow.up { transform: rotate(180deg); }
+
+.services-panel {
+  position: absolute; top: calc(100% + 12px); left: 50%;
+  transform: translateX(-50%);
+  width: max-content; min-width: 340px; max-width: 92vw;
+  max-height: 72vh; overflow-y: auto;
+  background: #fffdf8;
+  border: 1px solid #e8a9bd;
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(120, 40, 70, .16);
+  padding: 20px 0 14px;
+  z-index: 150;
+  animation: panelIn .25s ease both;
+}
+.services-panel::before {
+  content: '';
+  position: absolute;
+  top: -14px; left: 0; right: 0;
+  height: 14px;
+}
+.services-panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px 14px; margin-bottom: 6px;
+  border-bottom: 1px solid #f3e2e8;
+}
+.services-panel-title {
+  font-family: 'Montserrat', sans-serif; font-size: 11px;
+  letter-spacing: 3px; font-weight: 600; color: #b06a7c;
+}
+.services-all {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Montserrat', sans-serif; font-size: 11px;
+  letter-spacing: 1px; color: #c25e78;
+}
+.services-all:hover { text-decoration: underline; }
+
+/* Category list */
+.services-list {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 10px 12px 6px;
+}
+.mega-cat {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 13px 14px;
+  background: none; border: none; cursor: pointer;
+  border-radius: 14px; text-align: left;
+  transition: background .2s ease;
+}
+.mega-cat:hover { background: #fdf3f5; }
+.mega-cat-num {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 15px; font-weight: 600; color: #c25e78; min-width: 22px;
+}
+.mega-cat-title {
+  flex: 1;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 17px; font-weight: 600; color: #4a3b45;
+  transition: color .2s ease;
+}
+.mega-cat:hover .mega-cat-title { color: #c25e78; }
+.mega-cat-arrow {
+  font-size: 18px; color: #c25e78;
+}
+
+@media (max-width: 960px) {
+  .services-panel {
+    position: fixed; top: 110px; left: 50%;
+    transform: translateX(-50%);
+    width: min(92vw, 420px);
+  }
+}
