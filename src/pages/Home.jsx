@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+﻿import React, { useRef, useEffect, useState, useCallback } from 'react';
 import StreetHero from '../components/StreetHero.jsx';
 import WeddingCompany from '../components/WeddingCompany.jsx';
 import WhyChooseDhruva from '../components/WhyChooseDhruva.jsx';
@@ -55,7 +55,8 @@ export default function Home() {
     return () => cancelAnimationFrame(raf);
   }, [applyProgress]);
 
-  const unroll = Math.min(1, progress / UNROLL_END);
+  const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches;
+  const unroll = isMobile ? 1 : Math.min(1, progress / UNROLL_END);
 
   return (
     <>
